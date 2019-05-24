@@ -33,6 +33,7 @@ import static org.openapitools.codegen.utils.StringUtils.camelize;
 public class JavaJAXRSSpecServerCodegen extends AbstractJavaJAXRSServerCodegen {
 
     public static final String INTERFACE_ONLY = "interfaceOnly";
+    public static final String INTERFACE_NAME = "interfaceName";
     public static final String RETURN_RESPONSE = "returnResponse";
     public static final String GENERATE_POM = "generatePom";
     public static final String USE_SWAGGER_ANNOTATIONS = "useSwaggerAnnotations";
@@ -47,6 +48,7 @@ public class JavaJAXRSSpecServerCodegen extends AbstractJavaJAXRSServerCodegen {
     private String openApiSpecFileLocation = "src/main/openapi/openapi.yaml";
 
     private String primaryResourceName;
+    private  String interfaceName;
 
     public JavaJAXRSSpecServerCodegen() {
         super();
@@ -91,6 +93,7 @@ public class JavaJAXRSSpecServerCodegen extends AbstractJavaJAXRSServerCodegen {
         cliOptions.add(library);
         cliOptions.add(CliOption.newBoolean(GENERATE_POM, "Whether to generate pom.xml if the file does not already exist.").defaultValue(String.valueOf(generatePom)));
         cliOptions.add(CliOption.newBoolean(INTERFACE_ONLY, "Whether to generate only API interface stubs without the server files.").defaultValue(String.valueOf(interfaceOnly)));
+        cliOptions.add(CliOption.newString(INTERFACE_NAME, "Generate the interface with provided name"));
         cliOptions.add(CliOption.newBoolean(RETURN_RESPONSE, "Whether generate API interface should return javax.ws.rs.core.Response instead of a deserialized entity. Only useful if interfaceOnly is true.").defaultValue(String.valueOf(returnResponse)));
         cliOptions.add(CliOption.newBoolean(USE_SWAGGER_ANNOTATIONS, "Whether to generate Swagger annotations.", useSwaggerAnnotations));
         cliOptions.add(CliOption.newString(OPEN_API_SPEC_FILE_LOCATION, "Location where the file containing the spec will be generated in the output folder. No file generated when set to null or empty string."));
@@ -106,6 +109,9 @@ public class JavaJAXRSSpecServerCodegen extends AbstractJavaJAXRSServerCodegen {
             if (!interfaceOnly) {
                 additionalProperties.remove(INTERFACE_ONLY);
             }
+        }
+        if (additionalProperties.containsKey(INTERFACE_NAME)) {
+            interfaceName = additionalProperties.get(INTERFACE_NAME).toString();
         }
         if (additionalProperties.containsKey(RETURN_RESPONSE)) {
             returnResponse = Boolean.valueOf(additionalProperties.get(RETURN_RESPONSE).toString());
@@ -237,6 +243,9 @@ public class JavaJAXRSSpecServerCodegen extends AbstractJavaJAXRSServerCodegen {
 
     @Override
     public String toApiName(final String name) {
+        if(StringUtils.isNotEmpty(interfaceName)){
+            return camelize(sanitizeName(interfaceName));
+        }
         String computed = name;
         if (computed.length() == 0) {
             if (primaryResourceName == null) {

@@ -49,6 +49,7 @@ sidebar_label: jaxrs-spec
 |library|library template (sub-template)|<dl><dt>**&lt;default&gt;**</dt><dd>JAXRS</dd><dl>|&lt;default&gt;|
 |generatePom|Whether to generate pom.xml if the file does not already exist.| |true|
 |interfaceOnly|Whether to generate only API interface stubs without the server files.| |false|
+|interfaceName|Generates the interface with provided name.| ||
 |returnResponse|Whether generate API interface should return javax.ws.rs.core.Response instead of a deserialized entity. Only useful if interfaceOnly is true.| |false|
 |useSwaggerAnnotations|Whether to generate Swagger annotations.| |true|
 |openApiSpecFileLocation|Location where the file containing the spec will be generated in the output folder. No file generated when set to null or empty string.| |null|
